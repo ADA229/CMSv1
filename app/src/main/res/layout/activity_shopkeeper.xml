@@ -1,0 +1,42 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Shopkeeper Dashboard"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:paddingBottom="16dp"/>
+
+    <EditText
+        android:id="@+id/search_customer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Search Customer by Name"
+        android:padding="8dp"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btn_add_transaction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Transaction"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btn_add_credit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add New Credit"
+        android:layout_marginBottom="16dp"/>
+
+    <ListView
+        android:id="@+id/customer_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

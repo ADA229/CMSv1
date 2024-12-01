@@ -31,6 +31,10 @@
             android:name=".ui.HomeActivity"
             android:exported="true">
         </activity>
+        <activity
+            android:name=".ui.ShopKeeperActivity"
+            android:exported="true">
+        </activity>
     </application>
 
 </manifest>

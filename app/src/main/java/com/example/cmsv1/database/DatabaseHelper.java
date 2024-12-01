@@ -14,13 +14,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_USERS_TABLE = "CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, phone TEXT, password TEXT)";
+        String CREATE_USERS_TABLE = "CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, phone TEXT, password TEXT)";
         db.execSQL(CREATE_USERS_TABLE);
         
         String CREATE_CREDIT_TABLE = "CREATE TABLE credit (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, amount REAL, description TEXT, date TEXT, FOREIGN KEY(user_id) REFERENCES users(id))";
         db.execSQL(CREATE_CREDIT_TABLE);
 
-    
+        // Insert hardcoded shopkeeper entry
+        String INSERT_SHOPKEEPER = "INSERT INTO users (id, name, phone, password) VALUES (777, 'shopkeeper', '777', 'pass')";
+        db.execSQL(INSERT_SHOPKEEPER);
     }
 
     @Override

@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.cmsv1.MainActivity;
 import com.example.cmsv1.R;
 import com.example.cmsv1.database.UserDao;
+import com.example.cmsv1.ui.ShopKeeperActivity; // Ensure this class exists and is correctly named
 
 public class LoginActivity extends AppCompatActivity {
     private EditText usernameEditText;
@@ -48,7 +49,12 @@ public class LoginActivity extends AppCompatActivity {
         Pair<Boolean, Integer> authResult = userDao.authenticateUser(username, password);
         if (authResult.first) {
             globalUserId[0] = authResult.second; // Store user ID in global array
-            Intent intent = new Intent(this, HomeActivity.class);
+            Intent intent;
+            if (authResult.second == 777) {
+                intent = new Intent(this, ShopKeeperActivity.class);
+            } else {
+                intent = new Intent(this, HomeActivity.class);
+            }
             intent.putExtra("userId", authResult.second);
             startActivity(intent);
             finish();
