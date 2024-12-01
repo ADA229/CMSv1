@@ -169,6 +169,41 @@ public class UserDao {
         }
     }
 
+    public void EditCredit(String customer, String amount) {
+        Log.d(TAG, "Editing credit for customer: " + customer + ", amount: " + amount );
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cursor = null;
+        try {
+            ContentValues values = new ContentValues();
+            
+            // Extract name from customer string
+            String name = customer.replaceAll("\\s*\\(.*?\\)\\s*", "");
+            //print a log message with the name
+            Log.d(TAG, "Name: " + name);
+            int userId = getUserIdByName(name);
+            if (userId == -1) {
+                Log.e(TAG, "User not found: " + customer);
+                return;
+            }
+            values.put("amount", Double.parseDouble(amount));
+            int rowsAffected = db.update("credit", values, "user_id=?", new String[]{String.valueOf(userId)});
+            if (rowsAffected == 0) {
+                Log.e(TAG, "Failed to edit credit.");
+            } else {
+                Log.d(TAG, "Credit edited for user ID: " + userId);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error editing credit", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null && db.isOpen()) {
+                db.close();
+            }
+        }
+    }
+
     private int getUserIdByName(String name) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = null;
@@ -197,14 +232,32 @@ public class UserDao {
     public List<String> getAllTransactionHistory(int userId) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         List<String> transactions = new ArrayList<>();
-        Cursor cursor = db.query("credit", new String[]{"description", "amount", "date"}, "user_id=?", new String[]{String.valueOf(userId)}, null, null, "date DESC");
+        Cursor cursor;
+
+        if (userId == 777) {
+            // Query all transactions without filtering by user_id and join with users table to get the name
+            String query = "SELECT credit.description, credit.amount, credit.date, users.name " +
+                           "FROM credit " +
+                           "JOIN users ON credit.user_id = users.id " +
+                           "ORDER BY credit.date DESC";
+            cursor = db.rawQuery(query, null);
+        } else {
+            // Query transactions for the specific user_id
+            cursor = db.query("credit", new String[]{"description", "amount", "date"}, "user_id=?", new String[]{String.valueOf(userId)}, null, null, "date DESC");
+        }
+
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
         while (cursor.moveToNext()) {
             String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
             double amount = cursor.getDouble(cursor.getColumnIndexOrThrow("amount"));
             long dateMillis = cursor.getLong(cursor.getColumnIndexOrThrow("date"));
             String formattedDate = sdf.format(dateMillis);
-            transactions.add("Description: " + description + ", Amount: " + amount + ", Date: " + formattedDate);
+            if (userId == 777) {
+                String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                transactions.add("Name: " + name + ", Description: " + description + ", Amount: " + amount + ", Date: " + formattedDate);
+            } else {
+                transactions.add("Description: " + description + ", Amount: " + amount + ", Date: " + formattedDate);
+            }
         }
         cursor.close();
         db.close();
