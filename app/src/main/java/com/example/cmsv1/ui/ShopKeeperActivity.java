@@ -117,7 +117,7 @@ public class ShopKeeperActivity extends AppCompatActivity {
         btnAddCredit.setOnClickListener(new View.OnClickListener() { // Update this block
             @Override
             public void onClick(View v) {
-                showEditCreditDialog(); // Call the method
+              
             }
         });
 
@@ -129,7 +129,7 @@ public class ShopKeeperActivity extends AppCompatActivity {
                 Toast.makeText(ShopKeeperActivity.this, "Selected: " + selectedCustomer, Toast.LENGTH_SHORT).show();
                 searchCustomer.setText(selectedCustomer); // Add this line
 
-                showEditCreditDialog(); // Open the edit dialog
+              
             }
         });
 
@@ -150,39 +150,39 @@ public class ShopKeeperActivity extends AppCompatActivity {
         });
     }
 
-    private void showEditCreditDialog() { // Add this method
+    // private void showEditCreditDialog() { // Add this method
       
-        AlertDialog.Builder builder = new AlertDialog.Builder(ShopKeeperActivity.this);
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_add_credit, null);
-        builder.setView(dialogView);
+    //     AlertDialog.Builder builder = new AlertDialog.Builder(ShopKeeperActivity.this);
+    //     LayoutInflater inflater = getLayoutInflater();
+    //     View dialogView = inflater.inflate(R.layout.dialog_add_credit, null);
+    //     builder.setView(dialogView);
 
-        TextView customerName = dialogView.findViewById(R.id.customer_name);
-        EditText amount = dialogView.findViewById(R.id.amount);
-        Button btnSave = dialogView.findViewById(R.id.btn_save);
+    //     TextView customerName = dialogView.findViewById(R.id.customer_name);
+    //     EditText amount = dialogView.findViewById(R.id.amount);
+    //     Button btnSave = dialogView.findViewById(R.id.btn_save);
 
-        customerName.setText(selectedCustomer);
+    //     customerName.setText(selectedCustomer);
 
-        AlertDialog dialog = builder.create();
+    //     AlertDialog dialog = builder.create();
 
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String amountText = amount.getText().toString();
-                if (amountText.isEmpty()) {
-                    Toast.makeText(ShopKeeperActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+    //     btnSave.setOnClickListener(new View.OnClickListener() {
+    //         @Override
+    //         public void onClick(View v) {
+    //             String amountText = amount.getText().toString();
+    //             if (amountText.isEmpty()) {
+    //                 Toast.makeText(ShopKeeperActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+    //                 return;
+    //             }
 
-                // Save credit to database
-                // userDao.EditCredit(selectedCustomer, amountText, userId); // Update this line
+    //             // Save credit to database
+    //             // userDao.EditCredit(selectedCustomer, amountText, userId); // Update this line
     
-                dialog.dismiss();
-            }
-        });
+    //             dialog.dismiss();
+    //         }
+    //     });
 
-        dialog.show();
-    }
+    //     dialog.show();
+    // }
 
     private void showEditTransactionDialog(int transactionId) { // Add this method
         AlertDialog.Builder builder = new AlertDialog.Builder(ShopKeeperActivity.this);
