@@ -2,6 +2,7 @@ package com.example.cmsv1.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Pair;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -17,6 +18,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText passwordEditText;
     private Button loginButton;
     private Button signupButton;
+    private static int[] globalUserId = new int[1]; // Global array to store user ID
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +45,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private void authenticateUser(String username, String password) {
         UserDao userDao = new UserDao(this);
-        if (userDao.authenticateUser(username, password)) {
+        Pair<Boolean, Integer> authResult = userDao.authenticateUser(username, password);
+        if (authResult.first) {
+            globalUserId[0] = authResult.second; // Store user ID in global array
             Intent intent = new Intent(this, HomeActivity.class);
-
-
-
-            
-            intent.putExtra("username", username);
+            intent.putExtra("userId", authResult.second);
             startActivity(intent);
             finish();
         } else {
