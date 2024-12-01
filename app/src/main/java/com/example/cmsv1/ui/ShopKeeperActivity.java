@@ -79,7 +79,7 @@ public class ShopKeeperActivity extends AppCompatActivity {
                         }
 
                         // Save transaction to database
-                        // userDao.addTransaction(selectedCustomer, amountText, descriptionText);
+                        userDao.addTransaction(selectedCustomer, amountText, descriptionText); // Add this line
 
                         dialog.dismiss();
                     }

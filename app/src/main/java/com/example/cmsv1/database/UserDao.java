@@ -25,6 +25,11 @@ public class UserDao {
         values.put("phone", phone);
         values.put("password", password);
         long result = db.insert("users", null, values);
+        if (result == -1) {
+            Log.e(TAG, "Failed to register user.");
+        } else {
+            Log.d(TAG, "User registered with ID: " + result);
+        }
         db.close();
         return result != -1;
     }
@@ -124,4 +129,87 @@ public class UserDao {
         db.close();
         return customers;
     }
+
+    public void addTransaction(String customer, String amount, String description) {
+        Log.d(TAG, "Adding transaction for customer: " + customer + ", amount: " + amount + ", description: " + description);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cursor = null;
+        try {
+            ContentValues values = new ContentValues();
+            
+            // Extract name from customer string
+            String name = customer.replaceAll("\\s*\\(.*?\\)\\s*", "");
+            //print a log message with the name
+            Log.d(TAG, "Name: " + name);
+            int userId = getUserIdByName(name);
+            if (userId == -1) {
+                Log.e(TAG, "User not found: " + customer);
+                return;
+            }
+            values.put("user_id", userId);
+            values.put("amount", Double.parseDouble(amount));
+            values.put("description", description);
+            values.put("date", String.valueOf(System.currentTimeMillis()));
+            long result = db.insert("credit", null, values);
+            if (result == -1) {
+                Log.e(TAG, "Failed to add transaction.");
+            } else {
+                Log.d(TAG, "Transaction added with ID: " + result);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error adding transaction", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null && db.isOpen()) {
+                db.close();
+            }
+        }
+    }
+
+    private int getUserIdByName(String name) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        int userId = -1;
+        try {
+            cursor = db.query("users", new String[]{"id"}, "name=?", new String[]{name}, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                userId = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+            } else {
+                Log.e(TAG, "User not found: " + name);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error retrieving user ID", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            // Remove db.close() to prevent closing the database prematurely
+            // if (db != null && db.isOpen()) {
+            //     db.close();
+            // }
+        }
+        return userId;
+    }
 }
+// schema for SQLite Database referenced in the code snippet above
+// -- Schema for SQLite Database
+
+// -- Users Table
+// CREATE TABLE users (
+//     id INTEGER PRIMARY KEY,
+//     name TEXT NOT NULL,
+//     phone TEXT NOT NULL,
+//     password TEXT NOT NULL
+// );
+
+// -- Credit Table
+// CREATE TABLE credit (
+//     id INTEGER PRIMARY KEY AUTOINCREMENT,
+//     user_id INTEGER NOT NULL,
+//     amount REAL NOT NULL,
+//     description TEXT,
+//     date TEXT NOT NULL,
+//     FOREIGN KEY(user_id) REFERENCES users(id)
+// );
