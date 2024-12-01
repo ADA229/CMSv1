@@ -48,7 +48,7 @@ public class UserDao {
         return new Pair<>(isAuthenticated, userId);
     }
 
-    public String getCreditDetails(int userId) {
+    public String TotalCreditAmount(int userId) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         double totalAmount = 0;
         Cursor cursor = null;

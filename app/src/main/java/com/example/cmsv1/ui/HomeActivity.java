@@ -28,7 +28,7 @@ public class HomeActivity extends AppCompatActivity {
         UserDao userDao = new UserDao(this);
         String username = userDao.getUserName(userId);
         // Fetch credit details for the correct user
-        String creditDetails = userDao.getCreditDetails(userId);
+        String creditDetails = userDao.TotalCreditAmount(userId);
         String amount = creditDetails != null ? creditDetails : "N/A";
         String description = creditDetails != null ? creditDetails : "N/A";
 
