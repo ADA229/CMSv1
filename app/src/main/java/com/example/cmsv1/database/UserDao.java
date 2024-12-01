@@ -8,6 +8,8 @@ import android.util.Log;
 import android.util.Pair;
 import java.util.ArrayList; // Add this import
 import java.util.List; // Add this import
+import java.text.SimpleDateFormat; // Add this import
+import java.util.Locale; // Add this import
 
 public class UserDao {
     private static final String TAG = "UserDao";
@@ -190,6 +192,23 @@ public class UserDao {
             // }
         }
         return userId;
+    }
+
+    public List<String> getAllTransactionHistory(int userId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        List<String> transactions = new ArrayList<>();
+        Cursor cursor = db.query("credit", new String[]{"description", "amount", "date"}, "user_id=?", new String[]{String.valueOf(userId)}, null, null, "date DESC");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
+        while (cursor.moveToNext()) {
+            String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
+            double amount = cursor.getDouble(cursor.getColumnIndexOrThrow("amount"));
+            long dateMillis = cursor.getLong(cursor.getColumnIndexOrThrow("date"));
+            String formattedDate = sdf.format(dateMillis);
+            transactions.add("Description: " + description + ", Amount: " + amount + ", Date: " + formattedDate);
+        }
+        cursor.close();
+        db.close();
+        return transactions;
     }
 }
 // schema for SQLite Database referenced in the code snippet above

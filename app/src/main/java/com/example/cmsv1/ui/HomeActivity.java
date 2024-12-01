@@ -2,12 +2,16 @@ package com.example.cmsv1.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
+// Ensure the import statement for the R class is present
 import androidx.appcompat.app.AppCompatActivity;
 
-// Ensure the import statement for the R class is present
 import com.example.cmsv1.R;
 import com.example.cmsv1.database.UserDao;
+
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
     @Override
@@ -29,6 +33,12 @@ public class HomeActivity extends AppCompatActivity {
         String username = userDao.getUserName(userId);
         // Fetch credit details for the correct user
         String creditDetails = userDao.TotalCreditAmount(userId);
+        List<String> transactionHistory = userDao.getAllTransactionHistory(userId);
+
+    // Set up the ListView to display the transaction history
+        ListView transactionListView = findViewById(R.id.transactionListView);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, transactionHistory);
+        transactionListView.setAdapter(adapter);
         String amount = creditDetails != null ? creditDetails : "N/A";
         String description = creditDetails != null ? creditDetails : "N/A";
 

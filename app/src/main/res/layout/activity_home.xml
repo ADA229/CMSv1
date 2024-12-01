@@ -28,4 +28,11 @@
         android:text="Description of the commodity"
         android:textSize="14sp"
         android:layout_below="@id/amountTextView"/>
+
+    <ListView
+        android:id="@+id/transactionListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/descriptionTextView"
+        android:layout_marginTop="16dp"/>
 </RelativeLayout>
