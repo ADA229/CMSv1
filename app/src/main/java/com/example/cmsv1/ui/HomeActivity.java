@@ -6,11 +6,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.cmsv1.R;
 import com.example.cmsv1.database.UserDao;
-
+import android.util.Pair; // Add this import
+import java.util.ArrayList; // Add this import
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
@@ -33,12 +32,19 @@ public class HomeActivity extends AppCompatActivity {
         String username = userDao.getUserName(userId);
         // Fetch credit details for the correct user
         String creditDetails = userDao.TotalCreditAmount(userId);
-        List<String> transactionHistory = userDao.getAllTransactionHistory(userId);
+        
+        // Update this block to handle the new return type
+        List<Pair<Integer, String>> transactionHistory = userDao.getAllTransactionHistory(userId);
+        List<String> transactionDetails = new ArrayList<>();
+        for (Pair<Integer, String> transaction : transactionHistory) {
+            transactionDetails.add(transaction.second);
+        }
 
-    // Set up the ListView to display the transaction history
+        // Set up the ListView to display the transaction history
         ListView transactionListView = findViewById(R.id.transactionListView);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, transactionHistory);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, transactionDetails);
         transactionListView.setAdapter(adapter);
+
         String amount = creditDetails != null ? creditDetails : "N/A";
         String description =  " ";
 

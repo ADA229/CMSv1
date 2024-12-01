@@ -229,35 +229,38 @@ public class UserDao {
         return userId;
     }
 
-    public List<String> getAllTransactionHistory(int userId) {
+    public List<Pair<Integer, String>> getAllTransactionHistory(int userId) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        List<String> transactions = new ArrayList<>();
+        List<Pair<Integer, String>> transactions = new ArrayList<>();
         Cursor cursor;
 
         if (userId == 777) {
-            // Query all transactions without filtering by user_id and join with users table to get the name
-            String query = "SELECT credit.description, credit.amount, credit.date, users.name " +
+            // Query all transactions without filtering by user_id and join with users table to get the name and id from credit table
+            String query = "SELECT credit.id, credit.description, credit.amount, credit.date, users.name " +
                            "FROM credit " +
                            "JOIN users ON credit.user_id = users.id " +
                            "ORDER BY credit.date DESC";
             cursor = db.rawQuery(query, null);
         } else {
             // Query transactions for the specific user_id
-            cursor = db.query("credit", new String[]{"description", "amount", "date"}, "user_id=?", new String[]{String.valueOf(userId)}, null, null, "date DESC");
+            cursor = db.query("credit", new String[]{"id", "description", "amount", "date"}, "user_id=?", new String[]{String.valueOf(userId)}, null, null, "date DESC");
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
         while (cursor.moveToNext()) {
+            int creditId = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
             String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
             double amount = cursor.getDouble(cursor.getColumnIndexOrThrow("amount"));
             long dateMillis = cursor.getLong(cursor.getColumnIndexOrThrow("date"));
             String formattedDate = sdf.format(dateMillis);
+            String transactionDetails;
             if (userId == 777) {
                 String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
-                transactions.add("Name: " + name + ", Description: " + description + ", Amount: " + amount + ", Date: " + formattedDate);
+                transactionDetails = "Name: " + name + ", Description: " + description + ", Amount: " + amount + ", Date: " + formattedDate;
             } else {
-                transactions.add("Description: " + description + ", Amount: " + amount + ", Date: " + formattedDate);
+                transactionDetails = "Description: " + description + ", Amount: " + amount + ", Date: " + formattedDate;
             }
+            transactions.add(new Pair<>(creditId, transactionDetails));
         }
         cursor.close();
         db.close();

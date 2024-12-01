@@ -18,6 +18,7 @@ import android.widget.Toast; // Add this import
 import android.app.AlertDialog; // Add this import
 import android.view.LayoutInflater; // Add this import
 import android.widget.TextView; // Add this import
+import android.util.Pair; // Add this import
 
 public class ShopKeeperActivity extends AppCompatActivity {
 
@@ -48,10 +49,14 @@ public class ShopKeeperActivity extends AppCompatActivity {
         customerList.setAdapter(customerAdapter); // Add this line
 
         
-        // Add this block to display transaction history
-        List<String> transactionHistory = userDao.getAllTransactionHistory(777);
+        // Update this block to handle the new return type
+        List<Pair<Integer, String>> transactionHistory = userDao.getAllTransactionHistory(777);
+        List<String> transactionDetails = new ArrayList<>();
+        for (Pair<Integer, String> transaction : transactionHistory) {
+            transactionDetails.add(transaction.second);
+        }
         ListView transactionListView = findViewById(R.id.transactionListView);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, transactionHistory);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, transactionDetails);
         transactionListView.setAdapter(adapter);
 
         // add new
