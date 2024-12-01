@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-// Ensure the import statement for the R class is present
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.cmsv1.R;
@@ -40,10 +40,10 @@ public class HomeActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, transactionHistory);
         transactionListView.setAdapter(adapter);
         String amount = creditDetails != null ? creditDetails : "N/A";
-        String description = creditDetails != null ? creditDetails : "N/A";
+        String description =  " ";
 
         TextView welcomeTextView = findViewById(R.id.welcomeTextView);
-        welcomeTextView.setText("Welcome, " + username + "!");
+        welcomeTextView.setText("Welcome, " + username + " !");
 
         TextView amountTextView = findViewById(R.id.amountTextView);
         amountTextView.setText("Amount to be paid: " + amount);
