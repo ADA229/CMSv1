@@ -28,9 +28,9 @@ public class HomeActivity extends AppCompatActivity {
         UserDao userDao = new UserDao(this);
         String username = userDao.getUserName(userId);
         // Fetch credit details for the correct user
-        String[] creditDetails = userDao.getCreditDetails(userId);
-        String amount = creditDetails[0] != null ? creditDetails[0] : "N/A";
-        String description = creditDetails[1] != null ? creditDetails[1] : "N/A";
+        String creditDetails = userDao.getCreditDetails(userId);
+        String amount = creditDetails != null ? creditDetails : "N/A";
+        String description = creditDetails != null ? creditDetails : "N/A";
 
         TextView welcomeTextView = findViewById(R.id.welcomeTextView);
         welcomeTextView.setText("Welcome, " + username + "!");

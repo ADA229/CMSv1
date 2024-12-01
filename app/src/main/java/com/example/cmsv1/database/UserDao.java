@@ -48,25 +48,24 @@ public class UserDao {
         return new Pair<>(isAuthenticated, userId);
     }
 
-    public String[] getCreditDetails(int userId) {
+    public String getCreditDetails(int userId) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String[] creditDetails = new String[2];
+        double totalAmount = 0;
         Cursor cursor = null;
         try {
-            cursor = db.query("credit", new String[]{"amount", "description"}, "user_id=?", new String[]{String.valueOf(userId)}, null, null, null);
+            cursor = db.rawQuery("SELECT SUM(amount) as total FROM credit WHERE user_id=?", new String[]{String.valueOf(userId)});
             if (cursor != null && cursor.moveToFirst()) {
-                creditDetails[0] = cursor.getString(cursor.getColumnIndexOrThrow("amount"));
-                creditDetails[1] = cursor.getString(cursor.getColumnIndexOrThrow("description"));
+                totalAmount = cursor.getDouble(cursor.getColumnIndexOrThrow("total"));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error fetching credit details", e);
         } finally {
             if (cursor != null) {
                 cursor.close();
             }
             db.close();
         }
-        return creditDetails;
+        return String.valueOf(totalAmount);
     }
 
     public double getTotalAmount(int userId) {
