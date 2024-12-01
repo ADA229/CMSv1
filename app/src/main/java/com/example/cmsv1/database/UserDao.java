@@ -169,28 +169,18 @@ public class UserDao {
         }
     }
 
-    public void EditCredit(String customer, String amount) {
-        Log.d(TAG, "Editing credit for customer: " + customer + ", amount: " + amount );
+    public void EditCredit( String amount, Integer creditId) {
+        Log.d(TAG, "Editing credit for customer: " + " " + ", amount: " + amount + ", credit ID: " + creditId);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cursor = null;
         try {
             ContentValues values = new ContentValues();
-            
-            // Extract name from customer string
-            String name = customer.replaceAll("\\s*\\(.*?\\)\\s*", "");
-            //print a log message with the name
-            Log.d(TAG, "Name: " + name);
-            int userId = getUserIdByName(name);
-            if (userId == -1) {
-                Log.e(TAG, "User not found: " + customer);
-                return;
-            }
             values.put("amount", Double.parseDouble(amount));
-            int rowsAffected = db.update("credit", values, "user_id=?", new String[]{String.valueOf(userId)});
+            int rowsAffected = db.update("credit", values, "id=?", new String[]{String.valueOf(creditId)});
             if (rowsAffected == 0) {
                 Log.e(TAG, "Failed to edit credit.");
             } else {
-                Log.d(TAG, "Credit edited for user ID: " + userId);
+                Log.d(TAG, "Credit edited for credit ID: " + creditId);
             }
         } catch (Exception e) {
             Log.e(TAG, "Error editing credit", e);
