@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.util.Pair;
+import java.util.ArrayList; // Add this import
+import java.util.List; // Add this import
 
 public class UserDao {
     private static final String TAG = "UserDao";
@@ -107,5 +109,19 @@ public class UserDao {
         }
 
         return userName;
+    }
+
+    public List<String> searchCustomers(String query) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        List<String> customers = new ArrayList<>();
+        Cursor cursor = db.query("users", new String[]{"name", "phone"}, "(name LIKE ? OR phone LIKE ?) AND id != 777", new String[]{"%" + query + "%", "%" + query + "%"}, null, null, null);
+        while (cursor.moveToNext()) {
+            String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+            String phone = cursor.getString(cursor.getColumnIndexOrThrow("phone"));
+            customers.add(name + " (" + phone + ")");
+        }
+        cursor.close();
+        db.close();
+        return customers;
     }
 }
